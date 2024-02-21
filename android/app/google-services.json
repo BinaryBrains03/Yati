@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613497193532",
+    "project_id": "yati-414805",
+    "storage_bucket": "yati-414805.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613497193532:android:bf9923130d5105b055af39",
+        "android_client_info": {
+          "package_name": "com.mycompany.yati"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7KZCE5glkcHRt8Ym3QcFM17jm7t_U3gU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
