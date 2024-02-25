@@ -328,7 +328,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                   100.0, 0.0, 0.0, 0.0),
                                           child: FFButtonWidget(
                                             onPressed: () async {
-                                              context.pushNamed('Hero');
+                                              context.pushNamed('Community');
                                             },
                                             text: 'Community',
                                             options: FFButtonOptions(

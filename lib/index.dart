@@ -10,3 +10,4 @@ export '/view_laws/view_laws_widget.dart' show ViewLawsWidget;
 export '/self_defence/self_defence_widget.dart' show SelfDefenceWidget;
 export '/admin/admin_widget.dart' show AdminWidget;
 export '/safe_loc/safe_loc_widget.dart' show SafeLocWidget;
+export '/community/community_widget.dart' show CommunityWidget;

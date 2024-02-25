@@ -122,6 +122,7 @@ final parametersBuilderMap =
   'SelfDefence': ParameterData.none(),
   'Admin': ParameterData.none(),
   'SafeLoc': ParameterData.none(),
+  'Community': ParameterData.none(),
 };
 
 Map<String, dynamic> getInitialParameterData(Map<String, dynamic> data) {

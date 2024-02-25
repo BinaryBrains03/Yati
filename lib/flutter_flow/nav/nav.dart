@@ -138,6 +138,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'SafeLoc',
           path: '/safeLoc',
           builder: (context, params) => const SafeLocWidget(),
+        ),
+        FFRoute(
+          name: 'Community',
+          path: '/community',
+          builder: (context, params) => const CommunityWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
