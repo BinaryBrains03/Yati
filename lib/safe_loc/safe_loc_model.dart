@@ -10,6 +10,8 @@ class SafeLocModel extends FlutterFlowModel<SafeLocWidget> {
   // State field(s) for GoogleMap widget.
   LatLng? googleMapsCenter;
   final googleMapsController = Completer<GoogleMapController>();
+  // State field(s) for PlacePicker widget.
+  var placePickerValue = const FFPlace();
 
   /// Initialization and disposal methods.
 

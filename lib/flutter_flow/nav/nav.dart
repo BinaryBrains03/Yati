@@ -95,17 +95,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Alerted',
           path: '/alerted',
-          builder: (context, params) => const AlertedWidget(),
+          builder: (context, params) => AlertedWidget(
+            videoID: params.getParam('videoID', ParamType.String),
+          ),
         ),
         FFRoute(
           name: 'Acc',
           path: '/acc',
           builder: (context, params) => const AccWidget(),
-        ),
-        FFRoute(
-          name: 'SafeLoc',
-          path: '/safeLoc',
-          builder: (context, params) => const SafeLocWidget(),
         ),
         FFRoute(
           name: 'Hotspots',
@@ -136,6 +133,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'Admin',
           path: '/admin',
           builder: (context, params) => const AdminWidget(),
+        ),
+        FFRoute(
+          name: 'SafeLoc',
+          path: '/safeLoc',
+          builder: (context, params) => const SafeLocWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -307,6 +309,7 @@ class FFRoute {
           return null;
         },
         pageBuilder: (context, state) {
+          fixStatusBarOniOS16AndBelow(context);
           final ffParams = FFParameters(state, asyncParams);
           final page = ffParams.hasFutures
               ? FutureBuilder(

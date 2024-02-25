@@ -7,13 +7,23 @@ import '/backend/schema/util/schema_util.dart';
 
 import 'index.dart';
 
-class UsersRecord extends FirestoreRecord {
-  UsersRecord._(
+class UserDetailsRecord extends FirestoreRecord {
+  UserDetailsRecord._(
     super.reference,
     super.data,
   ) {
     _initializeFields();
   }
+
+  // "name" field.
+  String? _name;
+  String get name => _name ?? '';
+  bool hasName() => _name != null;
+
+  // "image" field.
+  String? _image;
+  String get image => _image ?? '';
+  bool hasImage() => _image != null;
 
   // "email" field.
   String? _email;
@@ -36,8 +46,8 @@ class UsersRecord extends FirestoreRecord {
   bool hasUid() => _uid != null;
 
   // "created_time" field.
-  String? _createdTime;
-  String get createdTime => _createdTime ?? '';
+  DateTime? _createdTime;
+  DateTime? get createdTime => _createdTime;
   bool hasCreatedTime() => _createdTime != null;
 
   // "phone_number" field.
@@ -46,57 +56,64 @@ class UsersRecord extends FirestoreRecord {
   bool hasPhoneNumber() => _phoneNumber != null;
 
   void _initializeFields() {
+    _name = snapshotData['name'] as String?;
+    _image = snapshotData['image'] as String?;
     _email = snapshotData['email'] as String?;
     _displayName = snapshotData['display_name'] as String?;
     _photoUrl = snapshotData['photo_url'] as String?;
     _uid = snapshotData['uid'] as String?;
-    _createdTime = snapshotData['created_time'] as String?;
+    _createdTime = snapshotData['created_time'] as DateTime?;
     _phoneNumber = snapshotData['phone_number'] as String?;
   }
 
   static CollectionReference get collection =>
-      FirebaseFirestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('userDetails');
 
-  static Stream<UsersRecord> getDocument(DocumentReference ref) =>
-      ref.snapshots().map((s) => UsersRecord.fromSnapshot(s));
+  static Stream<UserDetailsRecord> getDocument(DocumentReference ref) =>
+      ref.snapshots().map((s) => UserDetailsRecord.fromSnapshot(s));
 
-  static Future<UsersRecord> getDocumentOnce(DocumentReference ref) =>
-      ref.get().then((s) => UsersRecord.fromSnapshot(s));
+  static Future<UserDetailsRecord> getDocumentOnce(DocumentReference ref) =>
+      ref.get().then((s) => UserDetailsRecord.fromSnapshot(s));
 
-  static UsersRecord fromSnapshot(DocumentSnapshot snapshot) => UsersRecord._(
+  static UserDetailsRecord fromSnapshot(DocumentSnapshot snapshot) =>
+      UserDetailsRecord._(
         snapshot.reference,
         mapFromFirestore(snapshot.data() as Map<String, dynamic>),
       );
 
-  static UsersRecord getDocumentFromData(
+  static UserDetailsRecord getDocumentFromData(
     Map<String, dynamic> data,
     DocumentReference reference,
   ) =>
-      UsersRecord._(reference, mapFromFirestore(data));
+      UserDetailsRecord._(reference, mapFromFirestore(data));
 
   @override
   String toString() =>
-      'UsersRecord(reference: ${reference.path}, data: $snapshotData)';
+      'UserDetailsRecord(reference: ${reference.path}, data: $snapshotData)';
 
   @override
   int get hashCode => reference.path.hashCode;
 
   @override
   bool operator ==(other) =>
-      other is UsersRecord &&
+      other is UserDetailsRecord &&
       reference.path.hashCode == other.reference.path.hashCode;
 }
 
-Map<String, dynamic> createUsersRecordData({
+Map<String, dynamic> createUserDetailsRecordData({
+  String? name,
+  String? image,
   String? email,
   String? displayName,
   String? photoUrl,
   String? uid,
-  String? createdTime,
+  DateTime? createdTime,
   String? phoneNumber,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
+      'name': name,
+      'image': image,
       'email': email,
       'display_name': displayName,
       'photo_url': photoUrl,
@@ -109,12 +126,14 @@ Map<String, dynamic> createUsersRecordData({
   return firestoreData;
 }
 
-class UsersRecordDocumentEquality implements Equality<UsersRecord> {
-  const UsersRecordDocumentEquality();
+class UserDetailsRecordDocumentEquality implements Equality<UserDetailsRecord> {
+  const UserDetailsRecordDocumentEquality();
 
   @override
-  bool equals(UsersRecord? e1, UsersRecord? e2) {
-    return e1?.email == e2?.email &&
+  bool equals(UserDetailsRecord? e1, UserDetailsRecord? e2) {
+    return e1?.name == e2?.name &&
+        e1?.image == e2?.image &&
+        e1?.email == e2?.email &&
         e1?.displayName == e2?.displayName &&
         e1?.photoUrl == e2?.photoUrl &&
         e1?.uid == e2?.uid &&
@@ -123,7 +142,9 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
   }
 
   @override
-  int hash(UsersRecord? e) => const ListEquality().hash([
+  int hash(UserDetailsRecord? e) => const ListEquality().hash([
+        e?.name,
+        e?.image,
         e?.email,
         e?.displayName,
         e?.photoUrl,
@@ -133,5 +154,5 @@ class UsersRecordDocumentEquality implements Equality<UsersRecord> {
       ]);
 
   @override
-  bool isValidKey(Object? o) => o is UsersRecord;
+  bool isValidKey(Object? o) => o is UserDetailsRecord;
 }

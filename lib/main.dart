@@ -1,5 +1,3 @@
-import '/custom_code/actions/index.dart' as actions;
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -19,11 +17,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
   await initFirebase();
-
-  // Start initial custom actions code
-  await actions.onesignal();
-  await actions.mac();
-  // End initial custom actions code
 
   await FlutterFlowTheme.initialize();
 

@@ -1,8 +1,8 @@
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'acc_model.dart';
 export 'acc_model.dart';
 
@@ -53,15 +53,6 @@ class _AccWidgetState extends State<AccWidget> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    if (isiOS) {
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
-          statusBarBrightness: Theme.of(context).brightness,
-          systemStatusBarContrastEnforced: true,
-        ),
-      );
-    }
-
     return GestureDetector(
       onTap: () => _model.unfocusNode.canRequestFocus
           ? FocusScope.of(context).requestFocus(_model.unfocusNode)
@@ -70,22 +61,34 @@ class _AccWidgetState extends State<AccWidget> with TickerProviderStateMixin {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).alternate,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF412D42),
-          automaticallyImplyLeading: false,
-          title: Align(
-            alignment: const AlignmentDirectional(-1.0, 0.0),
-            child: Text(
-              'Create Account or Login',
-              style: FlutterFlowTheme.of(context).headlineMedium.override(
-                    fontFamily: 'Outfit',
-                    color: Colors.white,
-                    fontSize: 24.0,
-                  ),
+          backgroundColor: FlutterFlowTheme.of(context).primary,
+          automaticallyImplyLeading: true,
+          leading: FlutterFlowIconButton(
+            borderColor: FlutterFlowTheme.of(context).primary,
+            borderRadius: 20.0,
+            borderWidth: 1.0,
+            buttonSize: 40.0,
+            fillColor: FlutterFlowTheme.of(context).primary,
+            icon: Icon(
+              Icons.arrow_back,
+              color: FlutterFlowTheme.of(context).secondary,
+              size: 24.0,
             ),
+            onPressed: () async {
+              context.safePop();
+            },
+          ),
+          title: Text(
+            'Create Account or Login',
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  fontFamily: 'Readex Pro',
+                  color: FlutterFlowTheme.of(context).secondary,
+                  fontSize: 24.0,
+                ),
           ),
           actions: const [],
-          centerTitle: false,
-          elevation: 2.0,
+          centerTitle: true,
+          elevation: 4.0,
         ),
         body: SafeArea(
           top: true,

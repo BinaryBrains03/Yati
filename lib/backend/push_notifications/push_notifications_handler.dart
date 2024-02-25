@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'serialization_util.dart';
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../../flutter_flow/flutter_flow_util.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -108,15 +109,19 @@ final parametersBuilderMap =
     <String, Future<ParameterData> Function(Map<String, dynamic>)>{
   'Home': ParameterData.none(),
   'Buzzer': ParameterData.none(),
-  'Alerted': ParameterData.none(),
+  'Alerted': (data) async => ParameterData(
+        allParams: {
+          'videoID': getParameter<String>(data, 'videoID'),
+        },
+      ),
   'Acc': ParameterData.none(),
-  'SafeLoc': ParameterData.none(),
   'Hotspots': ParameterData.none(),
   'Hero': ParameterData.none(),
   'Report': ParameterData.none(),
   'ViewLaws': ParameterData.none(),
   'SelfDefence': ParameterData.none(),
   'Admin': ParameterData.none(),
+  'SafeLoc': ParameterData.none(),
 };
 
 Map<String, dynamic> getInitialParameterData(Map<String, dynamic> data) {

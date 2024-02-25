@@ -1,18 +1,14 @@
-import '/flutter_flow/flutter_flow_timer.dart';
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'alerted_widget.dart' show AlertedWidget;
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter/material.dart';
 
 class AlertedModel extends FlutterFlowModel<AlertedWidget> {
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();
-  // State field(s) for Timer widget.
-  int timerMilliseconds = 0;
-  String timerValue = StopWatchTimer.getDisplayTime(0, milliSecond: false);
-  FlutterFlowTimerController timerController =
-      FlutterFlowTimerController(StopWatchTimer(mode: StopWatchMode.countUp));
+  // Stores action output result for [Backend Call - Create Document] action in MuxBroadcast widget.
+  VideoAlertRecord? muxStreamOutput;
 
   /// Initialization and disposal methods.
 
@@ -22,7 +18,6 @@ class AlertedModel extends FlutterFlowModel<AlertedWidget> {
   @override
   void dispose() {
     unfocusNode.dispose();
-    timerController.dispose();
   }
 
   /// Action blocks are added here.

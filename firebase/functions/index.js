@@ -181,10 +181,10 @@ function getUserFcmTokensCollection(userDocPath) {
 
 function getDocIdBound(index, numBatches) {
   if (index <= 0) {
-    return "users/(";
+    return "userDetails/(";
   }
   if (index >= numBatches) {
-    return "users/}";
+    return "userDetails/}";
   }
   const numUidChars = 62;
   const twoCharOptions = Math.pow(numUidChars, 2);
@@ -194,7 +194,7 @@ function getDocIdBound(index, numBatches) {
   var secondCharIdx = Math.floor(twoCharIdx % numUidChars);
   const firstChar = getCharForIndex(firstCharIdx);
   const secondChar = getCharForIndex(secondCharIdx);
-  return "users/" + firstChar + secondChar;
+  return "userDetails/" + firstChar + secondChar;
 }
 
 function getCharForIndex(charIdx) {
@@ -206,8 +206,159 @@ function getCharForIndex(charIdx) {
     return String.fromCharCode("a".charCodeAt(0) + charIdx - 36);
   }
 }
+const Mux = require("@mux/mux-node");
+
+const kTokenId = "47b50cd4-4a74-4eee-8bd6-cdcbfee9cdc4";
+const kTokenSecret =
+  "oEQkbVJysm19jlkY3UwkMFmRnK+Kk8A72eWBWbxW1Rqd212ON0YXt++5Be5FVtrk5w3A6z6xtYY";
+
+const { Video } = new Mux(kTokenId, kTokenSecret);
+
+exports.createLiveStream = functions.https.onCall(async (data, context) => {
+  try {
+    const response = await Video.LiveStreams.create({
+      latency_mode: data.latency_mode || "standard",
+      playback_policy: "public",
+      new_asset_settings: { playback_policy: "public" },
+    });
+    return response;
+  } catch (err) {
+    console.error(
+      `Unable to start the live stream ${context.auth.uid}. 
+          Error ${err}`,
+    );
+    throw new functions.https.HttpsError(
+      "aborted",
+      "Could not create live stream",
+    );
+  }
+});
+
+exports.retrieveLiveStreams = functions.https.onCall(async (data, context) => {
+  try {
+    const liveStreams = await Video.LiveStreams.list();
+    const responseList = liveStreams.map((liveStream) => ({
+      id: liveStream.id,
+      status: liveStream.status,
+      playback_ids: liveStream.playback_ids,
+      created_at: liveStream.created_at,
+    }));
+    return responseList;
+  } catch (err) {
+    console.error(
+      `Unable to retrieve live streams. 
+          Error ${err}`,
+    );
+    throw new functions.https.HttpsError(
+      "aborted",
+      "Could not retrieve live streams",
+    );
+  }
+});
+
+exports.retrieveLiveStream = functions.https.onCall(async (data, context) => {
+  try {
+    const liveStreamId = data.liveStreamId;
+    const liveStream = await Video.LiveStreams.get(liveStreamId);
+    return liveStream;
+  } catch (err) {
+    console.error(
+      `Unable to retrieve live stream, id: ${data.liveStreamId}. 
+          Error ${err}`,
+    );
+    throw new functions.https.HttpsError(
+      "aborted",
+      "Could not retrieve live stream",
+    );
+  }
+});
+
+exports.deleteLiveStream = functions.https.onCall(async (data, context) => {
+  try {
+    const liveStreamId = data.liveStreamId;
+    const response = await Video.LiveStreams.del(liveStreamId);
+    return response;
+  } catch (err) {
+    console.error(
+      `Unable to delete live stream, id: ${data.liveStreamId}. 
+        Error ${err}`,
+    );
+    throw new functions.https.HttpsError(
+      "aborted",
+      "Could not delete live stream",
+    );
+  }
+});
 exports.onUserDeleted = functions.auth.user().onDelete(async (user) => {
   let firestore = admin.firestore();
-  let userRef = firestore.doc("users/" + user.uid);
-  await firestore.collection("users").doc(user.uid).delete();
+  let userRef = firestore.doc("userDetails/" + user.uid);
+});
+const OneSignal = require("@onesignal/node-onesignal");
+
+const kUserKey = "ODJjMzBlYWYtZmZlNC00YWVmLTg1MGYtOGYwYmRmNWI2ODFm";
+const kAPIKey = "YzYyMzE2YjMtZDYyNS00NDkxLWJlYTItNDkwYTFkM2I3YzVl";
+
+const configuration = OneSignal.createConfiguration({
+  userKey: kUserKey,
+  appKey: kAPIKey,
+});
+const client = new OneSignal.DefaultApi(configuration);
+const user = new OneSignal.User();
+
+exports.addUser = functions.https.onCall(async (data, context) => {
+  if (context.auth.uid != data.user_id) {
+    return "Unauthenticated calls are not allowed.";
+  }
+  try {
+    user.identity = {
+      external_id: data.user_id,
+    };
+    user.properties = {
+      tags: data.tags,
+    };
+    user.subscriptions = data.subscriptions;
+    const createdUser = await client.createUser(
+      "acc4c892-1a76-4130-9ccf-a50aa27f8140",
+      user,
+    );
+    if (createdUser.identity["onesignal_id"] == null) {
+      throw new functions.https.HttpsError(
+        "aborted",
+        "Could not create OneSignal user",
+      );
+    }
+    return createdUser;
+  } catch (err) {
+    console.error(
+      `Unable to create user ${context.auth.uid}.
+            Error ${err}`,
+    );
+    throw new functions.https.HttpsError(
+      "aborted",
+      "Could not create OneSignal user",
+    );
+  }
+});
+
+exports.deleteUser = functions.https.onCall(async (data, context) => {
+  if (context.auth.uid != data.user_id) {
+    return "Unauthenticated calls are not allowed.";
+  }
+  try {
+    await client.deleteUser(
+      "acc4c892-1a76-4130-9ccf-a50aa27f8140",
+      "external_id",
+      data.user_id,
+    );
+    return "User deleted";
+  } catch (err) {
+    console.error(
+      `Unable to delete user ${context.auth.uid}.
+            Error ${err}`,
+    );
+    throw new functions.https.HttpsError(
+      "aborted",
+      "Could not delete OneSignal user",
+    );
+  }
 });
